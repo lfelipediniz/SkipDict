@@ -10,7 +10,9 @@ struct no_
 {
     ITEM *chave;
     NO *proximo;
+    NO *anterior;
     NO *conjugado;
+    int camada;
 };
 
 NO *no_criar(ITEM *chave)
@@ -19,7 +21,9 @@ NO *no_criar(ITEM *chave)
     no = (NO *)malloc(sizeof(NO));
     no->chave = chave;
     no->proximo = NULL;
+    no->anterior = NULL;
     no->conjugado = NULL;
+    no->camada = 0;
 
     return no;
 }
@@ -27,6 +31,7 @@ NO *no_criar(ITEM *chave)
 void no_apagar(NO **no)
 {
     free(*no);
+    *no = NULL;
 }
 
 struct skiplist_
@@ -55,7 +60,9 @@ bool _insercao_camadas(SKIPLIST *lista, int camada, NO *no)
     else
     {
         lista->camadas_ultimo[camada]->proximo = no;
+        no->anterior = lista->camadas_ultimo[camada];
         lista->camadas_ultimo[camada] = no;
+
         return true;
     }
     return false;
@@ -85,20 +92,7 @@ bool skiplist_inserir(SKIPLIST *lista, ITEM *item)
     return true;
 }
 
-ITEM *skiplist_remover(SKIPLIST *lista, char *chave);
-
-bool skiplist_apagar(SKIPLIST **lista)
-{
-    // for (int i = 0; i < CAMADAS; i++)
-    // {
-    //     lista_apagar(&((*lista)->camadas[i]));
-    // }
-
-    // free(*lista);
-    return true;
-}
-
-ITEM *skiplist_busca(SKIPLIST *lista, char *chave)
+NO *_no_buscar(SKIPLIST *lista, char *chave)
 {
     int camada = CAMADAS - 1;
     NO *iter = lista->camadas_primeiro[camada];
@@ -108,19 +102,17 @@ ITEM *skiplist_busca(SKIPLIST *lista, char *chave)
     {
         if (iter == NULL)
         {
-            iter_anterior = iter;
-            iter = iter->proximo;
-            if (iter == NULL)
-            {
-                camada -= 1;
+            camada -= 1;
 
-                if ((camada + 1))
-                {
-                    iter_anterior = NULL;
-                    iter = lista->camadas_primeiro[camada];
-                }
-                else
-                    break;
+            if ((camada >= 0))
+            {
+                iter_anterior = NULL;
+                iter = lista->camadas_primeiro[camada];
+                continue;
+            }
+            else
+            {
+                return NULL;
             }
         }
 
@@ -130,7 +122,7 @@ ITEM *skiplist_busca(SKIPLIST *lista, char *chave)
         {
             if (cond == 0)
             {
-                return iter->chave;
+                return iter;
             }
             else
             {
@@ -138,9 +130,69 @@ ITEM *skiplist_busca(SKIPLIST *lista, char *chave)
                 iter = iter_anterior->conjugado;
             }
         }
+
+        iter_anterior = iter;
+        iter = iter->proximo;
+    }
+}
+
+ITEM *skiplist_remover(SKIPLIST *lista, char *chave)
+{
+    NO *base = _no_buscar(lista, chave);
+    ITEM *ret = base->chave;
+
+    while (base != NULL)
+    {
+        if (base->anterior == NULL)
+        {
+            lista->camadas_primeiro[base->camada] = base->proximo;
+        }
+        if (base->proximo == NULL)
+        {
+            lista->camadas_ultimo[base->camada] = base->anterior;
+        }
+        if (base->proximo == NULL && base->anterior != NULL)
+        {
+            base->anterior->proximo = base->proximo;
+            base->proximo->anterior = base->anterior;
+        }
+
+        NO *aux = base->conjugado;
+
+        no_apagar(&base);
+        base = aux;
     }
 
-    return NULL;
+    return ret;
+}
+
+bool skiplist_apagar(SKIPLIST **lista)
+{
+    for (int i = 0; i < CAMADAS; i++)
+    {
+        NO *iter = (*lista)->camadas_primeiro[i];
+
+        while (iter != NULL)
+        {
+            NO *aux = iter->proximo;
+            no_apagar(&iter);
+            iter = aux;
+        }
+    }
+
+    free(*lista);
+    *lista = NULL;
+
+    return true;
+}
+
+ITEM *skiplist_busca(SKIPLIST *lista, char *chave)
+{
+    NO *no = _no_buscar(lista, chave);
+    if (no != NULL)
+        return no->chave;
+    else
+        return NULL;
 }
 
 // talvez em letra maiuscula
