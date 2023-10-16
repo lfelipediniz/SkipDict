@@ -1,4 +1,4 @@
-#include "item.h"
+#include "../inc/item.h"
 
 // Estrutura de um nó do dicionário, que carrega consigo a palavra e seu
 // significado
