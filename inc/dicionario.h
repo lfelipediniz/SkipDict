@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "lista.h"
 #include "item.h"
 
 typedef struct dicionario_ DICIONARIO;

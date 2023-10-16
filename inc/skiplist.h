@@ -9,7 +9,6 @@
 #define PROB 0.2
 
 #include "item.h"
-#include "lista.h"
 #include <string.h>
 #include <stdlib.h>
 
