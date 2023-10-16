@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "item.h"
-#include "dicionario.h"
-#include "skiplist.h"
+#include "../inc/item.h"
+#include "../inc/dicionario.h"
+#include "../inc/skiplist.h"
 
 int main()
 {
