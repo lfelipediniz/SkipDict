@@ -1,11 +1,13 @@
 #ifndef DICIONARIO_H
 #define DICIONARIO_H
 
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <ctype.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "item.h"
+#include "skiplist.h"
 
 typedef struct dicionario_ DICIONARIO;
 

@@ -8,9 +8,10 @@
 #define CAMADAS 4
 #define PROB 0.2
 
-#include "item.h"
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include "item.h"
 
 float randf();
 

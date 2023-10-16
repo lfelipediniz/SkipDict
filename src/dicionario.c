@@ -1,47 +1,72 @@
-// #include "dicionario.h"
+#include "../inc/dicionario.h"
 
-// // O dicionario consiste em um array de listas onde cada indice desse
-// // array corresponde a uma letra do alfabeto, onde 'a' corresponde ao
-// // indice 0 e 'z' corresponde ao indice 26
-// struct dicionario_
-// {
-//     LISTA *paginas[26];
-// };
+struct dicionario_ {
+   SKIPLIST *skiplist;
+};
 
-// DICIONARIO *dicionario_criar()
-// {
-//     DICIONARIO *dicionario;
-//     dicionario = malloc(sizeof(DICIONARIO));
+DICIONARIO *dicionario_criar() {
+   DICIONARIO *dicionario = (DICIONARIO *)malloc(sizeof(DICIONARIO));
+   if (dicionario != NULL) {
+      dicionario->skiplist = skiplist_criar();
+      return dicionario;
+   }
+   return NULL;
+}
 
-//     for (int i = 0; i < 26; i++)
-//     {
-//         dicionario->paginas[i] = lista_criar();
-//     }
+bool dicionario_apagar(DICIONARIO **dicionario) {
+   if (*dicionario != NULL) {
+      skiplist_apagar(&((*dicionario)->skiplist));
+      free(*dicionario);
+      *dicionario = NULL;
+      return true;
+   }
+   return false;
+}
 
-//     return dicionario;
-// }
+bool dicionario_insercao(DICIONARIO *dicionario, char *str1, char *str2) {
+   ITEM *item = item_criar(str1, str2);
+   if (item != NULL) {
+      if (skiplist_busca(dicionario->skiplist, str1) == NULL) {
+         return skiplist_inserir(dicionario->skiplist, item);
+      }
+      item_apagar(&item);  // A palavra já existe, liberar memória do item
+   }
+   return false;
+}
 
-// bool dicionario_apagar(DICIONARIO **dicionario)
-// {
-//     free(*dicionario);
-//     return true;
-// }
+bool dicionario_alteracao(DICIONARIO *dicionario, char *str1, char *str2) {
+   ITEM *item = skiplist_busca(dicionario->skiplist, str1);
+   if (item != NULL) {
+      item_set_str2(item, str2);
+      return true;
+   }
+   return false;
+}
 
-// bool dicionario_insercao(DICIONARIO *dicionario, char *str1, char *str2)
-// {
-//     int indice = tolower(str1[0]) - 'a';
-//     ITEM *item = item_criar(str1, str2);
-//     return lista_inserir(dicionario->paginas[indice], item);
-// }
+bool dicionario_remocao(DICIONARIO *dicionario, char *str) {
+   ITEM *item = skiplist_remover(dicionario->skiplist, str);
+   if (item != NULL) {
+      item_apagar(&item);
+      return true;
+   }
+   return false;
+}
 
-// bool dicionario_alteracao(DICIONARIO *dicionario, char *str1, char *str2);
-// bool dicionario_remocao(DICIONARIO *dicionario, char *str);
+ITEM *dicionario_busca(DICIONARIO *dicionario, char *str) {
+   return skiplist_busca(dicionario->skiplist, str);
+}
 
-// ITEM *dicionario_busca(DICIONARIO *dicionario, char *str)
-// {
-//     int indice = tolower(str[0]) - 'a';
-
-//     return lista_busca(dicionario->paginas[indice], str);
-// }
-
-// bool dicionario_impressao(DICIONARIO *dicionario, char *str);
+bool dicionario_impressao(DICIONARIO *dicionario, char *str) {
+   bool encontrado = false;
+   for (int i = 0; i < TAM_MAX; i++) {
+      ITEM *item = skiplist_busca(dicionario->skiplist, str);
+      if (item != NULL) {
+         encontrado = true;
+         item_imprimir(item);
+      }
+   }
+   if (!encontrado) {
+      printf("NAO HA PALAVRAS INICIADAS POR %s\n", str);
+   }
+   return encontrado;
+}
