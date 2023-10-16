@@ -1,25 +1,37 @@
-all: item.o lista.o main.o dicionario.o skiplist.o
-	gcc item.o lista.o main.o dicionario.o skiplist.o -o main -std=c99 -Wall
+# Diretórios
+SRC_DIR = src
+INC_DIR = inc
+OUT_DIR = out
 
-item.o:
-	gcc -c item.c -o item.o
+# Compilador e opções
+CC = gcc
+CFLAGS = -Wall -I$(INC_DIR)
 
-lista.o:
-	gcc -c lista.c -o lista.o
+# Lista de fontes e objetos
+SOURCES := $(wildcard $(SRC_DIR)/*.c)
+OBJECTS := $(patsubst $(SRC_DIR)/%.c, $(OUT_DIR)/%.o, $(SOURCES))
 
-dicionario.o:
-	gcc -c dicionario.c -o dicionario.o
-	 	 
-main.o:
-	gcc -c main.c -o main.o
+# Nome do executável
+EXECUTABLE = $(OUT_DIR)/main
 
-skiplist.o:
-	gcc -c skiplist.c -o skiplist.o
+# Regra de compilação
+$(OUT_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-reset: clean all run
+# Regra de linkagem
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(CFLAGS) $^ -o $@
 
+# Regra para criar diretórios, se necessário
+$(shell mkdir -p $(OUT_DIR))
+
+# Comando para limpar arquivos temporários
 clean:
-	rm *.o main
+	rm -rf $(OUT_DIR) $(EXECUTABLE)
 
-run: 
-	./main
+# Regra para executar o programa
+run: $(EXECUTABLE)
+	./$(EXECUTABLE)
+
+# Regra para compilar o programa (make all)
+all: $(EXECUTABLE)
