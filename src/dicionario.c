@@ -137,13 +137,18 @@ void liberar_sl(SKIPLIST *lista) {
    }
 }
 
-void printarPalavrasInicial_sl(SKIPLIST *lista, char ch1) {
+int printarPalavrasInicial_sl(SKIPLIST *lista, char ch1) {
+   int printouPalavra = 0; 
    NODE *aux = lista->header->prox[1];
+
    while (aux && aux->palavra[0] < ch1) {
       aux = aux->prox[1];
    }
    while (aux && aux->palavra[0] == ch1) {
       printf("%s: %s\n", aux->palavra, aux->definicao);
       aux = aux->prox[1];
+      printouPalavra = 1; // pelo menos uma palavra foi impressa
    }
+
+   return printouPalavra;
 }

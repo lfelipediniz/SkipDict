@@ -24,6 +24,6 @@ int inserir_sl(SKIPLIST *lista, char *palavra, char *definicao);
 int update_sl(SKIPLIST *lista, char *palavra, char *definicao);
 int deletar_sl(SKIPLIST *lista, char *palavra);
 void liberar_sl(SKIPLIST *lista);
-void printarPalavrasInicial_sl(SKIPLIST *lista, char ch1);
+int printarPalavrasInicial_sl(SKIPLIST *lista, char ch1);
 
 #endif
