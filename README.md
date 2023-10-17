@@ -107,6 +107,13 @@ cliche palavra ou frase utilizada em excesso <br>
 </td>
 </table>
 
+## Authors
+
+| Names                       | USP Number |
+| :---------------------------| ---------- |
+| Luiz Felipe Diniz Costa     | 13782032   |
+| Andrey Cortez Rufino        | 11819487   |
+
 Project for the course ["Algorithm and Data Structure"](https://uspdigital.usp.br/jupiterweb/obterDisciplina?sgldis=SSC0902) at the Institute of Mathematics and Computer Science, University of Sao Paulo
 
 
