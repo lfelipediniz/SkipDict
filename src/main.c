@@ -8,12 +8,11 @@ int main() {
    char definicao[MAX_DEFINICAO];
    int flag;
 
-   while (1) {
-      scanf("%s", operation);
+   while (scanf("%s", operation) != EOF) {  // Continua até o final da entrada
       if (strcmp(operation, "insercao") == 0) {
          scanf("%s", palavra);
-         fgets(definicao, MAX_DEFINICAO, stdin);      // le com os espacos
-         definicao[strcspn(definicao, "\n")] = '\0';  // tira a quebra de linha
+         fgets(definicao, MAX_DEFINICAO, stdin);
+         definicao[strcspn(definicao, "\n")] = '\0';
          inserir_sl(dicionario, palavra, definicao);
       }
 
@@ -27,7 +26,7 @@ int main() {
          }
       } else if (strcmp(operation, "remocao") == 0) {
          flag = deletar_sl(dicionario, palavra);
-         if (!flag) printf("OPERACAO INVALIDA");
+         if (!flag) printf("OPERACAO INVALIDA\n");
       } else if (strcmp(operation, "alteracao") == 0) {
          scanf("%s", palavra);
          fgets(definicao, MAX_DEFINICAO, stdin);
@@ -38,12 +37,12 @@ int main() {
          while ((ch1 = getchar()) != '\n') {
             if (ch1 != ' ' && ch1 != '\t') {
                flag = printarPalavrasInicial_sl(dicionario, ch1);
-               if (!flag) printf("NAO HA PALAVRAS INICIADAS POR %c", ch1);
+               if (!flag) printf("NAO HA PALAVRAS INICIADAS POR %c\n", ch1);
                break;
             }
          }
       } else {
-         printf("OPERACAO INVALIDA");
+         printf("OPERACAO INVALIDA\n");
       }
    }
 
