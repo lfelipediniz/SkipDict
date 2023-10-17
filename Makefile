@@ -44,4 +44,4 @@ zip:
 	zip $(ZIP_FILE) $(ZIP_FILES)
 
 # Regra para compilar o programa (make all)
-all: $(EXECUTABLE)
+all: $(EXECUTABLE) 
