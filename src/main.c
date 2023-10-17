@@ -23,9 +23,12 @@ int main() {
          update_sl(dicionario, palavra, definicao);
       } else if (strcmp(operation, "impressao") == 0) {
          char ch1;
-         scanf("%c", &ch1);
-
-         printarPalavrasInicial_sl(dicionario, ch1);
+         while ((ch1 = getchar()) != '\n') {
+            if (ch1 != ' ' && ch1 != '\t') {
+               printarPalavrasInicial_sl(dicionario, ch1);
+               break;
+            }
+         }
       }
    }
 
