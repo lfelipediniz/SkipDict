@@ -151,7 +151,7 @@ int printarPalavrasInicial_sl(SKIPLIST *lista, char ch1) {
       aux = aux->prox[1];
    }
    while (aux && aux->palavra[0] == ch1) {
-      printf("%s: %s\n", aux->palavra, aux->definicao);
+      printf("%s %s\n", aux->palavra, aux->definicao);
       aux = aux->prox[1];
       printouPalavra = 1; // pelo menos uma palavra foi impressa
    }
