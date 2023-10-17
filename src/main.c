@@ -6,6 +6,7 @@ int main() {
    char operation[15];
    char palavra[MAX_PALAVRA];
    char definicao[MAX_DEFINICAO];
+   int flag;
 
    while (1) {
       scanf("%s", operation);
@@ -25,7 +26,8 @@ int main() {
             printf("Palavra não encontrada.\n");
          }
       } else if (strcmp(operation, "remocao") == 0) {
-         deletar_sl(dicionario, palavra);
+         flag = deletar_sl(dicionario, palavra);
+         if (!flag) printf("OPERACAO INVALIDA");
       } else if (strcmp(operation, "alteracao") == 0) {
          scanf("%s", palavra);
          fgets(definicao, MAX_DEFINICAO, stdin);
@@ -35,7 +37,7 @@ int main() {
          char ch1;
          while ((ch1 = getchar()) != '\n') {
             if (ch1 != ' ' && ch1 != '\t') {
-               int flag = printarPalavrasInicial_sl(dicionario, ch1);
+               flag = printarPalavrasInicial_sl(dicionario, ch1);
                if (!flag) printf("NAO HA PALAVRAS INICIADAS POR %c", ch1);
                break;
             }
