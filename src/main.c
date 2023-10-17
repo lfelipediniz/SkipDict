@@ -45,5 +45,7 @@ int main() {
       }
    }
 
+   liberar_sl(dicionario);
+
    return 0;
 }

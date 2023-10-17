@@ -5,6 +5,7 @@ typedef struct skiplist_ {
    NODE *header;
 } SKIPLIST;
 
+// criando a listas com a estrutura da skip list
 SKIPLIST *criar_sl() {
    SKIPLIST *lista = (SKIPLIST *)malloc(sizeof(SKIPLIST));
 
@@ -26,12 +27,14 @@ SKIPLIST *criar_sl() {
    return lista;
 }
 
+// auxilia na geracao dos niveis aleatorios
 static int randLevel() {
    int level = 1;
    while (rand() < RAND_MAX / 2 && level < SKIPLIST_MAX_LEVEL) level++;
    return level;
 }
 
+// busca um node na lista
 NODE *buscar_sl(SKIPLIST *lista, char *palavra) {
    int i;
    NODE *aux = lista->header;
@@ -89,6 +92,7 @@ int inserir_sl(SKIPLIST *lista, char *palavra, char *definicao) {
    return 1;
 }
 
+// atualiza a definicao do node
 int update_sl(SKIPLIST *lista, char *palavra, char *definicao) {
    NODE *aux = buscar_sl(lista, palavra);
    if (aux) {
@@ -129,6 +133,7 @@ int deletar_sl(SKIPLIST *lista, char *palavra) {
    return 0;
 }
 
+// libera memoria da lista
 void liberar_sl(SKIPLIST *lista) {
    NODE *aux = lista->header->prox[1];
    while (aux) {
@@ -137,6 +142,7 @@ void liberar_sl(SKIPLIST *lista) {
    }
 }
 
+// imprime todas as palavras da lista com base no primeiro caractere
 int printarPalavrasInicial_sl(SKIPLIST *lista, char ch1) {
    int printouPalavra = 0; 
    NODE *aux = lista->header->prox[1];
