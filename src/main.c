@@ -34,18 +34,14 @@ int main() {
          update_sl(dicionario, palavra, definicao);
       } else if (strcmp(operation, "impressao") == 0) {
          char ch1;
-         while ((ch1 = getchar()) != '\n') {
-            if (ch1 != ' ' && ch1 != '\t') {
-               flag = printarPalavrasInicial_sl(dicionario, ch1);
-               if (!flag) printf("NAO HA PALAVRAS INICIADAS POR %c\n", ch1);
-               break;
-            }
-         }
+         getchar();  // Consumir o caractere de nova linha deixado no buffer
+         ch1 = getchar();  // Ler o caractere desejado
+         flag = printarPalavrasInicial_sl(dicionario, ch1);
+         if (!flag) printf("NAO HA PALAVRAS INICIADAS POR %c\n", ch1);
       } else {
          printf("OPERACAO INVALIDA\n");
       }
    }
-
    liberar_sl(dicionario);
 
    return 0;

@@ -137,7 +137,6 @@ int deletar_sl(SKIPLIST *lista, char *palavra) {
 void liberar_sl(SKIPLIST *lista) {
    NODE *aux = lista->header->prox[1];
    while (aux) {
-      printf("%s: %s\n", aux->palavra, aux->definicao);
       aux = aux->prox[1];
    }
 }
