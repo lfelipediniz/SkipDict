@@ -6,11 +6,12 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_PALAVRA 50
-#define MAX_DEFINICAO 140
+#define MAX_PALAVRA 100
+#define MAX_DEFINICAO 240
 #define SKIPLIST_MAX_LEVEL 6
 
-typedef struct node_ {
+typedef struct node_
+{
    char palavra[MAX_PALAVRA];
    char definicao[MAX_DEFINICAO];
    struct node_ **prox;

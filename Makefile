@@ -22,7 +22,7 @@ ZIP_FILES := $(SOURCES) $(wildcard $(INC_DIR)/*.h) Makefile
 
 # Regra de compilação
 $(OUT_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ 
 
 # Regra de linkagem
 $(EXECUTABLE): $(OBJECTS)
