@@ -98,6 +98,8 @@ int update_sl(SKIPLIST *lista, char *palavra, char *definicao) {
    if (aux) {
       strncpy(aux->definicao, definicao, MAX_DEFINICAO);
       return 1;
+   } else {
+      printf("OPERACAO INVALIDA\n");
    }
    return 0;
 }
@@ -116,7 +118,7 @@ int deletar_sl(SKIPLIST *lista, char *palavra) {
 
    aux = aux->prox[1];
 
-   if (aux && strcmp(aux->palavra, palavra) == 0) {
+   if (aux && (strcmp(aux->palavra, palavra) == 0)) {
       for (i = 1; i <= lista->level; i++) {
          if (update[i]->prox[i] != aux) break;
          update[i]->prox[i] = aux->prox[i];
@@ -137,22 +139,23 @@ int deletar_sl(SKIPLIST *lista, char *palavra) {
 void liberar_sl(SKIPLIST *lista) {
    NODE *aux = lista->header->prox[1];
    while (aux) {
+      // printf("%s: %s\n", aux->palavra, aux->definicao);
       aux = aux->prox[1];
    }
 }
 
 // imprime todas as palavras da lista com base no primeiro caractere
 int printarPalavrasInicial_sl(SKIPLIST *lista, char ch1) {
-   int printouPalavra = 0; 
+   int printouPalavra = 0;
    NODE *aux = lista->header->prox[1];
 
    while (aux && aux->palavra[0] < ch1) {
       aux = aux->prox[1];
    }
    while (aux && aux->palavra[0] == ch1) {
-      printf("%s %s\n", aux->palavra, aux->definicao);
+      printf("%s%s\n", aux->palavra, aux->definicao);
       aux = aux->prox[1];
-      printouPalavra = 1; // pelo menos uma palavra foi impressa
+      printouPalavra = 1;  // pelo menos uma palavra foi impressa
    }
 
    return printouPalavra;
