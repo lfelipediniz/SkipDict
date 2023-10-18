@@ -1,81 +1,59 @@
-#include "dicionario.h"
+#include "../inc/dicionario.h"
 
-int main()
-{
-   DICIONARIO *dicionario = dicionario_criar();
+int main() {
+   SKIPLIST *dicionario = criar_sl();
 
    char operation[15];
-   char palavra[140];
-   char definicao[280];
+   char palavra[MAX_PALAVRA];
+   char definicao[MAX_DEFINICAO];
    int flag;
+   NODE *resultado;
 
-   while (scanf("%s", operation) != EOF)
-   {
-      // int i = 0;
-      // while (i < 10200)
-      // {
-      //    i++;
-      //    scanf("%s", operation);
+   // laço que vai capturar as operacoes ate o final do arquivo do runcodes
+   while (scanf("%s", operation) != EOF) {
       // Continua até o final da entrada
-      if (strcmp(operation, "insercao") == 0)
-      {
+      if (strcmp(operation, "insercao") == 0) {
          scanf("%s", palavra);
-         fgets(definicao, 280, stdin);
+         fgets(definicao, MAX_DEFINICAO, stdin);
          definicao[strcspn(definicao, "\n")] = '\0';
 
-         if (!dicionario_insercao(dicionario, palavra, definicao))
-         {
-            printf("OPERACAO INVALIDA\n");
-         }
-      }
-      else if (strcmp(operation, "busca") == 0)
-      {
-         scanf("%s", palavra);
+         resultado = buscar_sl(dicionario, palavra);
 
-         ITEM *resultado = dicionario_busca(dicionario, palavra);
-
-         if (resultado != NULL)
-         {
-            printf("%s%s\n", item_get_str1(resultado), item_get_str2(resultado));
-         }
+         if (!resultado)
+            inserir_sl(dicionario, palavra, definicao);
          else
-         {
             printf("OPERACAO INVALIDA\n");
-         }
-      }
-      else if (strcmp(operation, "remocao") == 0)
-      {
+      } else if (strcmp(operation, "busca") == 0) {
          scanf("%s", palavra);
-         if (!dicionario_remocao(dicionario, palavra))
+
+         resultado = buscar_sl(dicionario, palavra);
+
+         if (resultado)
+            printf("%s%s\n", palavra, resultado->definicao);
+         else
             printf("OPERACAO INVALIDA\n");
-      }
-      else if (strcmp(operation, "alteracao") == 0)
-      {
-         // Ta meio errado ainda
+      } else if (strcmp(operation, "remocao") == 0) {
          scanf("%s", palavra);
-         fgets(definicao, 280, stdin);
+
+         flag = deletar_sl(dicionario, palavra);
+         if (!flag) printf("OPERACAO INVALIDA\n");
+      } else if (strcmp(operation, "alteracao") == 0) {
+         scanf("%s", palavra);
+         fgets(definicao, MAX_DEFINICAO, stdin);
+
          definicao[strcspn(definicao, "\n")] = '\0';
-
-         if (!dicionario_alteracao(dicionario, palavra, definicao))
-            printf("OPERACAO INVALIDA\n");
-      }
-      else if (strcmp(operation, "impressao") == 0)
-      {
+         update_sl(dicionario, palavra, definicao);
+      } else if (strcmp(operation, "impressao") == 0) {
          char ch1;
-         getchar();
-         ch1 = getchar();
-
-         flag = dicionario_impressao(dicionario, ch1);
-         if (!flag)
-            printf("NAO HA PALAVRAS INICIADAS POR %c\n", ch1);
-      }
-      else
-      {
+         getchar();  
+         ch1 = getchar();  // le o char
+         flag = printarPalavrasInicial_sl(dicionario, ch1);
+         if (!flag) printf("NAO HA PALAVRAS INICIADAS POR %c\n", ch1);
+      } else
          printf("OPERACAO INVALIDA\n");
-      }
    }
 
-   dicionario_apagar(&dicionario);
+   liberar_sl(dicionario);
 
    return 0;
 }
