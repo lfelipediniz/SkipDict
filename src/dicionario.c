@@ -1,196 +1,82 @@
 #include "../inc/dicionario.h"
 
-typedef struct skiplist_
+struct dicionario_
 {
-   int level;
-   NODE *header;
-} SKIPLIST;
+   SKIPLIST *skiplist;
+};
 
-// criando a listas com a estrutura da skip list
-SKIPLIST *criar_sl()
+DICIONARIO *dicionario_criar()
 {
-   SKIPLIST *lista = (SKIPLIST *)malloc(sizeof(SKIPLIST));
-
-   NODE *header = (NODE *)malloc(sizeof(NODE));
-   if (!lista || !header)
-      return NULL;
-
-   lista->header = header;
-   strncpy(header->palavra, "", MAX_PALAVRA);
-   header->prox = (NODE **)malloc(sizeof(NODE *) * (SKIPLIST_MAX_LEVEL + 1));
-
-   int i;
-
-   for (i = 0; i <= SKIPLIST_MAX_LEVEL; i++)
+   DICIONARIO *dicionario = (DICIONARIO *)malloc(sizeof(DICIONARIO));
+   if (dicionario != NULL)
    {
-      header->prox[i] = NULL;
+      dicionario->skiplist = skiplist_criar();
+      return dicionario;
    }
-
-   lista->level = 1;
-
-   return lista;
+   return NULL;
 }
 
-// auxilia na geracao dos niveis aleatorios
-static int randLevel()
+bool dicionario_apagar(DICIONARIO **dicionario)
 {
-   int level = 1;
-   while (rand() < RAND_MAX / 2 && level < SKIPLIST_MAX_LEVEL)
-      level++;
-   return level;
+   if (*dicionario != NULL)
+   {
+      skiplist_apagar(&((*dicionario)->skiplist));
+      free(*dicionario);
+      *dicionario = NULL;
+      return true;
+   }
+   return false;
 }
 
-// busca um node na lista
-NODE *buscar_sl(SKIPLIST *lista, char *palavra)
+bool dicionario_insercao(DICIONARIO *dicionario, char *str1, char *str2)
 {
-   int i;
-   NODE *aux = lista->header;
-
-   for (i = lista->level; i >= 1; i--)
+   ITEM *item = item_criar(str1, str2);
+   if (item != NULL)
    {
-      while (aux->prox[i] && strcmp(aux->prox[i]->palavra, palavra) < 0)
-      {
-         aux = aux->prox[i];
-      }
+      return skiplist_inserir(dicionario->skiplist, item);
    }
-
-   if (aux->prox[1] && strcmp(aux->prox[1]->palavra, palavra) == 0)
-      return aux->prox[1];
-   else
-      return NULL;
+   return false;
 }
 
-int inserir_sl(SKIPLIST *lista, char *palavra, char *definicao)
+bool dicionario_alteracao(DICIONARIO *dicionario, char *str1, char *str2)
 {
-   NODE *update[SKIPLIST_MAX_LEVEL + 1];
-   NODE *aux = lista->header;
-   int i;
-
-   for (i = lista->level; i >= 1; i--)
+   ITEM *item = skiplist_busca(dicionario->skiplist, str1);
+   if (item != NULL)
    {
-      while (aux->prox[i] && strcmp(aux->prox[i]->palavra, palavra) < 0)
-      {
-         aux = aux->prox[i];
-      }
-      update[i] = aux;
+      item_set_str2(item, str2);
+      return true;
    }
-
-   aux = aux->prox[1];
-
-   if (aux && strcmp(aux->palavra, palavra) == 0)
-   {
-      strncpy(aux->definicao, definicao, MAX_DEFINICAO);
-      return 0;
-   }
-   else
-   {
-      int level = randLevel();
-
-      if (level > lista->level)
-      {
-         for (i = lista->level + 1; i <= level; i++)
-         {
-            update[i] = lista->header;
-         }
-         lista->level = level;
-      }
-
-      aux = (NODE *)malloc(sizeof(NODE));
-      strncpy(aux->palavra, palavra, MAX_PALAVRA);
-      strncpy(aux->definicao, definicao, MAX_DEFINICAO);
-      aux->prox = (NODE **)malloc(sizeof(NODE *) * (level + 1));
-
-      for (i = 1; i <= level; i++)
-      {
-         aux->prox[i] = update[i]->prox[i];
-         update[i]->prox[i] = aux;
-      }
-   }
-
-   return 1;
+   return false;
 }
 
-// atualiza a definicao do node
-int update_sl(SKIPLIST *lista, char *palavra, char *definicao)
+bool dicionario_remocao(DICIONARIO *dicionario, char *str)
 {
-   NODE *aux = buscar_sl(lista, palavra);
-   if (aux)
+   ITEM *item = skiplist_remover(dicionario->skiplist, str);
+   if (item != NULL)
    {
-      strncpy(aux->definicao, definicao, MAX_DEFINICAO);
-      return 1;
+      item_apagar(&item);
+      return true;
    }
-   else
-   {
-      printf("OPERACAO INVALIDA\n");
-   }
-   return 0;
+   return false;
 }
 
-int deletar_sl(SKIPLIST *lista, char *palavra)
+ITEM *dicionario_busca(DICIONARIO *dicionario, char *str)
 {
-   NODE *update[SKIPLIST_MAX_LEVEL + 1];
-   NODE *aux = lista->header;
-   int i;
-
-   for (i = lista->level; i >= 1; i--)
-   {
-      while (aux->prox[i] && strcmp(aux->prox[i]->palavra, palavra) < 0)
-      {
-         aux = aux->prox[i];
-      }
-      update[i] = aux;
-   }
-
-   aux = aux->prox[1];
-
-   if (aux && (strcmp(aux->palavra, palavra) == 0))
-   {
-      for (i = 1; i <= lista->level; i++)
-      {
-         if (update[i]->prox[i] != aux)
-            break;
-         update[i]->prox[i] = aux->prox[i];
-      }
-      free(aux->prox);
-      free(aux);
-
-      while (lista->level > 1 && lista->header->prox[lista->level] == NULL)
-      {
-         lista->level--;
-      }
-
-      return 1;
-   }
-   return 0;
+   return skiplist_busca(dicionario->skiplist, str);
 }
 
-// libera memoria da lista
-void liberar_sl(SKIPLIST *lista)
+bool dicionario_impressao(DICIONARIO *dicionario, char c)
 {
-   NODE *aux = lista->header->prox[1];
-   while (aux)
-   {
-      // printf("%s: %s\n", aux->palavra, aux->definicao);
-      aux = aux->prox[1];
-   }
-}
+   ITEM **item = skiplist_busca_caractere(dicionario->skiplist, c);
+   if (item == NULL)
+      return false;
 
-// imprime todas as palavras da lista com base no primeiro caractere
-int printarPalavrasInicial_sl(SKIPLIST *lista, char ch1)
-{
-   int printouPalavra = 0;
-   NODE *aux = lista->header->prox[1];
-
-   while (aux && aux->palavra[0] < ch1)
+   int i = 0;
+   while (item[i] != NULL)
    {
-      aux = aux->prox[1];
-   }
-   while (aux && aux->palavra[0] == ch1)
-   {
-      printf("%s%s\n", aux->palavra, aux->definicao);
-      aux = aux->prox[1];
-      printouPalavra = 1; // pelo menos uma palavra foi impressa
+      printf("%s%s\n", item_get_str1(item[i]), item_get_str2(item[i]));
+      i++;
    }
 
-   return printouPalavra;
+   return true;
 }
