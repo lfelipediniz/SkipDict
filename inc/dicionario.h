@@ -6,8 +6,8 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_PALAVRA 100
-#define MAX_DEFINICAO 240
+#define MAX_PALAVRA 50
+#define MAX_DEFINICAO 140
 #define SKIPLIST_MAX_LEVEL 10
 
 typedef struct node_ {
